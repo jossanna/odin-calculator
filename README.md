@@ -1,4 +1,4 @@
-# odin-calculator
+# Calculator - Odin Project
 
 A calculator web application built as part of [The Odin Project](https://www.theodinproject.com) curriculum. Features a clean user interface with basic arithmetic operations and keyboard support.
 
