@@ -29,6 +29,7 @@ const elements = {
   display: document.querySelector(".result-display"),
   calculationDisplay: document.querySelector(".calculation-display"),
   operatorButtons: document.querySelectorAll(".operator"),
+  backspaceButton: document.querySelector(".backspace"),
 };
 
 // Update displays
@@ -103,8 +104,12 @@ elements.equalsButton.addEventListener("click", () => {
 });
 
 // Handle clear and clear all
-elements.clearButton.addEventListener("click", () => {
+elements.backspaceButton.addEventListener("click", () => {
   updateDisplay(elements.display.textContent.slice(0, -1));
+});
+
+elements.clearButton.addEventListener("click", () => {
+  updateDisplay("");
 });
 
 elements.clearAllButton.addEventListener("click", () => {
