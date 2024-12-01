@@ -1,4 +1,3 @@
-// Basic math operations
 function add(a, b) {
   return Number((parseFloat(a) + parseFloat(b)).toFixed(5));
 }
@@ -21,7 +20,6 @@ const operators = {
   "/": divide,
 };
 
-// Calculator state
 let a = undefined;
 let b = undefined;
 let operator = undefined;
@@ -29,12 +27,11 @@ let result = undefined;
 
 const operate = (a, b, operator) => operator(a, b);
 
-// DOM elements
 const elements = {
   numberButtons: document.querySelectorAll(".number"),
   equalsButton: document.querySelector("#equals"),
-  clearButton: document.querySelector(".clear"),
   clearAllButton: document.querySelector(".clear-all"),
+  negativeButton: document.querySelector(".negative"),
   commaButton: document.querySelector(".comma"),
   display: document.querySelector(".result-display"),
   calculationDisplay: document.querySelector(".calculation-display"),
@@ -42,7 +39,8 @@ const elements = {
   backspaceButton: document.querySelector(".backspace"),
 };
 
-// Update displays
+console.log(elements.operatorButtons);
+
 const updateDisplay = (content) => {
   elements.display.textContent = content;
 };
@@ -51,7 +49,31 @@ const updateCalculationDisplay = (content) => {
   elements.calculationDisplay.textContent = content;
 };
 
-// Handle number input
+const keyboardMap = {
+  Enter: () => elements.equalsButton.click(),
+  Backspace: () => elements.backspaceButton.click(),
+  Escape: () => elements.clearAllButton.click(),
+  "+": () => elements.operatorButtons[3].click(),
+  "-": () => elements.operatorButtons[2].click(),
+  "*": () => elements.operatorButtons[1].click(),
+  "/": () => elements.operatorButtons[0].click(),
+  ".": () => elements.commaButton.click(),
+};
+
+for (let i = 0; i <= 9; i++) {
+  keyboardMap[i.toString()] = () => {
+    const numberButton = Array.from(elements.numberButtons).find(
+      (button) => button.textContent === i.toString()
+    );
+    if (numberButton) numberButton.click();
+  };
+}
+
+document.addEventListener("keydown", (event) => {
+  const handler = keyboardMap[event.key];
+  if (handler) handler();
+});
+
 elements.numberButtons.forEach((button) => {
   button.addEventListener("click", () => {
     if (
@@ -65,12 +87,10 @@ elements.numberButtons.forEach((button) => {
   });
 });
 
-// Handle operator input
 elements.operatorButtons.forEach((button) => {
   button.addEventListener("click", () => {
     const displayContent = elements.display.textContent;
 
-    // First number input
     if (a === undefined || (operator === undefined && displayContent !== "")) {
       a = displayContent || a;
       operator = operators[button.textContent];
@@ -79,7 +99,12 @@ elements.operatorButtons.forEach((button) => {
       return;
     }
 
-    // Second number input
+    if (displayContent === "") {
+      operator = operators[button.textContent];
+      updateCalculationDisplay(`${a} ${button.textContent}`);
+      return;
+    }
+
     if (b === undefined && displayContent !== "") {
       b = displayContent;
       result = operate(a, b, operator);
@@ -103,7 +128,6 @@ elements.operatorButtons.forEach((button) => {
   });
 });
 
-// Handle equals
 elements.equalsButton.addEventListener("click", () => {
   const displayContent = elements.display.textContent;
 
@@ -120,13 +144,8 @@ elements.equalsButton.addEventListener("click", () => {
   result = undefined;
 });
 
-// Handle clear and clear all
 elements.backspaceButton.addEventListener("click", () => {
   updateDisplay(elements.display.textContent.slice(0, -1));
-});
-
-elements.clearButton.addEventListener("click", () => {
-  updateDisplay("");
 });
 
 elements.clearAllButton.addEventListener("click", () => {
@@ -136,4 +155,8 @@ elements.clearAllButton.addEventListener("click", () => {
   b = undefined;
   operator = undefined;
   result = undefined;
+});
+
+elements.negativeButton.addEventListener("click", () => {
+  updateDisplay(elements.display.textContent * -1);
 });
