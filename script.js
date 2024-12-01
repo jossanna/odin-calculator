@@ -1,8 +1,18 @@
 // Basic math operations
-const add = (a, b) => parseFloat(a) + parseFloat(b);
-const subtract = (a, b) => parseFloat(a) - parseFloat(b);
-const multiply = (a, b) => parseFloat(a) * parseFloat(b);
-const divide = (a, b) => (b === "0" ? "NOPE" : parseFloat(a) / parseFloat(b));
+function add(a, b) {
+  return Number((parseFloat(a) + parseFloat(b)).toFixed(5));
+}
+function subtract(a, b) {
+  return Number((parseFloat(a) - parseFloat(b)).toFixed(5));
+}
+function multiply(a, b) {
+  return Number((parseFloat(a) * parseFloat(b)).toFixed(5));
+}
+function divide(a, b) {
+  return b === "0"
+    ? "NOPE"
+    : Number((parseFloat(a) / parseFloat(b)).toFixed(5));
+}
 
 const operators = {
   "+": add,
@@ -44,6 +54,13 @@ const updateCalculationDisplay = (content) => {
 // Handle number input
 elements.numberButtons.forEach((button) => {
   button.addEventListener("click", () => {
+    if (
+      button.classList.contains("comma") &&
+      elements.display.textContent.includes(".")
+    ) {
+      return;
+    }
+
     updateDisplay(elements.display.textContent + button.textContent);
   });
 });
