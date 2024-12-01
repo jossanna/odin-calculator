@@ -8,7 +8,7 @@ function multiply(a, b) {
   return Number((parseFloat(a) * parseFloat(b)).toFixed(5));
 }
 function divide(a, b) {
-  return b === "0"
+  return b === "0" || b === 0
     ? "NOPE"
     : Number((parseFloat(a) / parseFloat(b)).toFixed(5));
 }
@@ -89,8 +89,12 @@ elements.numberButtons.forEach((button) => {
 
 elements.operatorButtons.forEach((button) => {
   button.addEventListener("click", () => {
+    if (button.id === "equals") return;
+
     const displayContent = elements.display.textContent;
 
+    // Scenario 1: First number input - store first number and operator
+    // Example: User enters "5" then clicks "+"
     if (a === undefined || (operator === undefined && displayContent !== "")) {
       a = displayContent || a;
       operator = operators[button.textContent];
@@ -99,12 +103,16 @@ elements.operatorButtons.forEach((button) => {
       return;
     }
 
+    // Scenario 2: Change operator without second number
+    // Example: User enters "5" then "+" then changes to "-"
     if (displayContent === "") {
       operator = operators[button.textContent];
       updateCalculationDisplay(`${a} ${button.textContent}`);
       return;
     }
 
+    // Scenario 3: Chain calculation - calculate result and prepare for next operation
+    // Example: User enters "5" "+" "3" then clicks "-" -> shows "8 -"
     if (b === undefined && displayContent !== "") {
       b = displayContent;
       result = operate(a, b, operator);
@@ -118,8 +126,8 @@ elements.operatorButtons.forEach((button) => {
       return;
     }
 
-    if (button.id === "equals") return;
-
+    // Scenario 4: Change operator after chained calculation
+    // Updates display to show new operator
     operator = operators[button.textContent];
     updateCalculationDisplay(
       `${elements.calculationDisplay.textContent} ${button.textContent}`
@@ -130,6 +138,9 @@ elements.operatorButtons.forEach((button) => {
 
 elements.equalsButton.addEventListener("click", () => {
   const displayContent = elements.display.textContent;
+
+  // Add check for missing operator or first number
+  if (!operator || a === undefined) return;
 
   if (b === undefined && displayContent !== "") {
     b = displayContent;
@@ -158,5 +169,7 @@ elements.clearAllButton.addEventListener("click", () => {
 });
 
 elements.negativeButton.addEventListener("click", () => {
-  updateDisplay(elements.display.textContent * -1);
+  const currentValue = elements.display.textContent;
+  if (currentValue === "") return;
+  updateDisplay(parseFloat(currentValue) * -1);
 });
